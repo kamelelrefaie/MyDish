@@ -1,0 +1,34 @@
+<resources>
+    <string name="app_name">My Dish</string>
+
+    <string name="title_all_dishes">All Dishes</string>
+    <string name="title_favourite_dishes">Favorite</string>
+    <string name="title_random_dish">Random Dish</string>
+    <string name="title_dish_details">Dish Details</string>
+
+    <string name="splash_screen_title">fav dish</string>
+    <string name="add_dish">Add Dish</string>
+
+    <string name="lbl_title">Title</string>
+    <string name="lbl_type">Type</string>
+    <string name="lbl_category">Category</string>
+    <string name="lbl_ingredients">Ingredients</string>
+    <string name="lbl_cooking_time">Cooking Times In Minutes</string>
+    <string name="lbl_direction">Direction To Cook</string>
+    <string name="lbl_camera">Camera</string>
+    <string name="lbl_gallery">Gallery</string>
+    <string name="lbl_no_dishes_add_yet">No Dishes Add Yet</string>
+
+    <string name="lbl_yes">Yes</string>
+    <string name="lbl_no">No</string>
+    <string name="msg_delete_dish_dialog">Are you sure you wants to delete %1$s. </string>
+
+    <string name="title_select_image_action">Select Image Action</string>
+    <string name="title_select_dish_type">Select Dish Type</string>
+    <string name="title_select_dish_category">Select Dish Category</string>
+    <string name="title_select_dish_cooking_time">Select Cooking Time</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_select_item_to_filter">Select Item To Filter</string>
+
+</resources>
