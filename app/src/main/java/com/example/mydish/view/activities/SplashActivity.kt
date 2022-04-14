@@ -10,7 +10,9 @@ import android.view.animation.Animation
 import android.view.animation.AnimationUtils
 import com.example.mydish.R
 import com.example.mydish.databinding.ActivitySplashBinding
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class SplashActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

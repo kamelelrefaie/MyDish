@@ -37,6 +37,6 @@
         tools:layout="@layout/fragment_dish_details" >
         <argument
             android:name="dishDetails"
-            app:argType="com.example.mydish.model.entities.FavDish" />
+            app:argType="com.example.mydish.model.remote.responses.FavDish" />
     </fragment>
 </navigation>

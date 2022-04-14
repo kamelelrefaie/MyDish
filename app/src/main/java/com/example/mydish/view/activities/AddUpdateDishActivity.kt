@@ -21,6 +21,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.DataSource
@@ -33,7 +34,7 @@ import com.example.mydish.application.FavDishApplication
 import com.example.mydish.databinding.ActivityAddUpdateDishBinding
 import com.example.mydish.databinding.DialogCustomListBinding
 import com.example.mydish.databinding.DialogCustomeImageSelectionBinding
-import com.example.mydish.model.entities.FavDish
+import com.example.mydish.model.remote.responses.FavDish
 import com.example.mydish.utils.Constants
 import com.example.mydish.utils.Constants.DISH_CATEGORY
 import com.example.mydish.utils.Constants.DISH_COOKING_TIME
@@ -48,6 +49,7 @@ import com.karumi.dexter.MultiplePermissionsReport
 import com.karumi.dexter.PermissionToken
 import com.karumi.dexter.listener.PermissionRequest
 import com.karumi.dexter.listener.multi.MultiplePermissionsListener
+import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
 import java.io.FileOutputStream
 import java.io.IOException
@@ -55,16 +57,14 @@ import java.io.OutputStream
 import java.lang.Exception
 import java.util.*
 
-
+@AndroidEntryPoint
 class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
 
     private lateinit var mBinding: ActivityAddUpdateDishBinding
     private lateinit var mCustomListDialog: Dialog
     private var mFavDishDetails: FavDish? = null
 
-    private val mFavDishViewModel: FavDishViewModel by viewModels {
-        FavDishViewModel.FavDishViewModelFactory((application as FavDishApplication).repository)
-    }
+    lateinit var mFavDishViewModel: FavDishViewModel
 
     private var imagePath = ""
 
@@ -72,6 +72,7 @@ class AddUpdateDishActivity : AppCompatActivity(), View.OnClickListener {
         super.onCreate(savedInstanceState)
         mBinding = ActivityAddUpdateDishBinding.inflate(layoutInflater)
         setContentView(mBinding.root)
+        mFavDishViewModel = ViewModelProvider(this)[FavDishViewModel::class.java]
 
 
         if (intent.hasExtra(Constants.EXTRA_DISH_DETAILS)) {

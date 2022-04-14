@@ -2,46 +2,44 @@ package com.example.mydish.view.viewmodel
 
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.mydish.model.entities.RandomDish
-import com.example.mydish.model.network.RandomDishApiService
-import io.reactivex.rxjava3.android.schedulers.AndroidSchedulers
-import io.reactivex.rxjava3.core.Scheduler
-import io.reactivex.rxjava3.disposables.CompositeDisposable
-import io.reactivex.rxjava3.observers.DisposableSingleObserver
-import io.reactivex.rxjava3.schedulers.Schedulers
-import io.reactivex.rxjava3.schedulers.Schedulers.newThread
+import androidx.lifecycle.viewModelScope
+import com.example.mydish.model.remote.responses.RandomDish
+import com.example.mydish.repository.FavDishRepository
+import com.example.mydish.utils.Constants
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import java.lang.Exception
+import javax.inject.Inject
 
+@HiltViewModel
+class RandomDishViewModel @Inject constructor(private val repository: FavDishRepository) :
+    ViewModel() {
 
-class RandomDishViewModel : ViewModel() {
-    private val randomRecipeApiService = RandomDishApiService()
-
-    private val compositeDisposable = CompositeDisposable()
 
     val loadRandomDish = MutableLiveData<Boolean>()
+    val randomDishResponse = MutableLiveData<RandomDish>()
     val randomDishLoadingError = MutableLiveData<Boolean>()
-    val randomDishResponse = MutableLiveData<RandomDish.Recipes>()
 
-    fun getRandomRecipeFromAPI() {
+
+    fun getRandomDishFromAPI() {
         loadRandomDish.value = true
 
-        compositeDisposable.add(
-            randomRecipeApiService.getRandomDish().subscribeOn(Schedulers.newThread())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(object : DisposableSingleObserver<RandomDish.Recipes>() {
-                    override fun onSuccess(value: RandomDish.Recipes) {
-                        loadRandomDish.value = false
-                        randomDishLoadingError.value = false
-                        randomDishResponse.value = value
 
-                    }
+        viewModelScope.launch {
+            try {
+                randomDishResponse.value = repository.getRandomDish(
+                    Constants.LIMIT_LICENSE_VALUE,
+                    Constants.TAGS_VALUE,
+                    Constants.NUMBER_VALUE
+                ).data!!
+                loadRandomDish.value = false
+            } catch (e: Exception) {
+                randomDishLoadingError.value = true
+                loadRandomDish.value = false
+            }
 
-                    override fun onError(e: Throwable) {
-                        randomDishLoadingError.value = true
-                        loadRandomDish.value = false
+        }
 
-                    }
 
-                })
-        )
     }
 }

@@ -29,6 +29,8 @@ object Constants {
     const val BASE_URL = "https://api.spoonacular.com/"
     const val API_KEY_VALUE = "e5c13aea1eee4d0383914317042b0f86"
 
+    const val DATABASE_NAME = "fav_dish_database"
+
 
     fun dishTypes(): ArrayList<String> {
         val list = ArrayList<String>()

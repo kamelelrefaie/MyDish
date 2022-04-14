@@ -9,7 +9,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.example.mydish.R
 import com.example.mydish.databinding.ItemDishLayoutBinding
-import com.example.mydish.model.entities.FavDish
+import com.example.mydish.model.remote.responses.FavDish
 import com.example.mydish.utils.Constants
 import com.example.mydish.view.activities.AddUpdateDishActivity
 import com.example.mydish.view.fragments.AllDishesFragment
@@ -55,7 +55,6 @@ class FavDishAdapter(private val fragment: Fragment) :
                 } else if (it.itemId == R.id.action_delete_dish) {
                     if (fragment is AllDishesFragment) {
                         fragment.deleteDish(dish)
-
                     }
                 }
                 true

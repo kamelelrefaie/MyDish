@@ -1,15 +1,17 @@
 package com.example.mydish.view.fragments
 
+import android.content.Intent
 import android.graphics.drawable.Drawable
+import android.os.Build
 import android.os.Bundle
+import android.text.Html
+import android.view.*
 import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
 import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.palette.graphics.Palette
 import com.bumptech.glide.Glide
@@ -20,6 +22,8 @@ import com.bumptech.glide.request.target.Target
 import com.example.mydish.R
 import com.example.mydish.application.FavDishApplication
 import com.example.mydish.databinding.FragmentDishDetailsBinding
+import com.example.mydish.model.remote.responses.FavDish
+import com.example.mydish.utils.Constants
 import com.example.mydish.view.viewmodel.FavDishViewModel
 import java.lang.Exception
 import java.util.*
@@ -28,14 +32,67 @@ import java.util.*
 class DishDetailsFragment : Fragment() {
     // TODO: Rename and change types of parameters
 
+    private var mFavDishDetail: FavDish? = null
     private lateinit var mBinding: FragmentDishDetailsBinding
-    private val mFavDishViewModel: FavDishViewModel by viewModels {
-        FavDishViewModel.FavDishViewModelFactory(repository = FavDishApplication().repository)
+    lateinit var mFavDishViewModel: FavDishViewModel
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.menu_details_share, menu)
+        super.onCreateOptionsMenu(menu, inflater)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menu_details_item_share -> {
+                val type = "text/plain"
+                val subject = "Check out this dish recipe"
+                var extraText = ""
+                val shareWith = "Share With"
+
+                mFavDishDetail?.let {
+                    var image = ""
+                    if (it.imageSource == Constants.DISH_IMAGE_SOURCE_ONLINE) {
+                        image = it.image
+                    }
+
+
+                    var cookingInstructions = ""
+
+                    // The instruction or you can say the Cooking direction text is in the HTML format so we will you the fromHtml to populate it in the TextView.
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+                        cookingInstructions = Html.fromHtml(
+                            it.directionToCook,
+                            Html.FROM_HTML_MODE_COMPACT
+                        ).toString()
+                    } else {
+                        @Suppress("DEPRECATION")
+                        cookingInstructions = Html.fromHtml(it.directionToCook).toString()
+                    }
+
+                    extraText =
+                        "$image \n" +
+                                "\n Title:  ${it.title} \n\n Type: ${it.type} \n\n Category: ${it.category}" +
+                                "\n\n Ingredients: \n ${it.ingredients} \n\n Instructions To Cook: \n $cookingInstructions" +
+                                "\n\n Time required to cook the dish approx ${it.cookingTime} minutes."
+
+                }
+
+
+                val intent = Intent(Intent.ACTION_SEND)
+                intent.type = type
+                intent.putExtra(Intent.EXTRA_SUBJECT, subject)
+                intent.putExtra(Intent.EXTRA_TEXT, extraText)
+                startActivity(Intent.createChooser(intent, shareWith))
+
+                return true
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        setHasOptionsMenu(true)
     }
 
     override fun onCreateView(
@@ -44,8 +101,7 @@ class DishDetailsFragment : Fragment() {
     ): View? {
         // Inflate the layout for this fragment
         mBinding = FragmentDishDetailsBinding.inflate(inflater, container, false)
-
-
+        mFavDishViewModel = ViewModelProvider(requireActivity())[FavDishViewModel::class.java]
 
         return mBinding.root
     }
@@ -54,6 +110,7 @@ class DishDetailsFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         val args: DishDetailsFragmentArgs by navArgs()
 
+        mFavDishDetail = args.dishDetails
         args.let {
             try {
                 Glide.with(requireActivity()).load(args.dishDetails.image).centerCrop()

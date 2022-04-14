@@ -11,7 +11,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mydish.application.FavDishApplication
 import com.example.mydish.databinding.FragmentFavouriteDishesBinding
-import com.example.mydish.model.entities.FavDish
+import com.example.mydish.model.remote.responses.FavDish
 import com.example.mydish.view.activities.MainActivity
 import com.example.mydish.view.adapters.FavDishAdapter
 import com.example.mydish.view.viewmodel.DashboardViewModel
@@ -20,9 +20,7 @@ import com.example.mydish.view.viewmodel.FavDishViewModel
 class FavouriteDishesFragment : Fragment() {
 
     private var _binding: FragmentFavouriteDishesBinding? = null
-    private val mFavDishViewModel: FavDishViewModel by viewModels {
-        FavDishViewModel.FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
-    }
+    lateinit var mFavDishViewModel: FavDishViewModel
 
     // This property is only valid between onCreateView and
     // onDestroyView.
@@ -34,7 +32,8 @@ class FavouriteDishesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         val dashboardViewModel =
-            ViewModelProvider(this).get(DashboardViewModel::class.java)
+            ViewModelProvider(requireActivity())[DashboardViewModel::class.java]
+        mFavDishViewModel = ViewModelProvider(requireActivity())[FavDishViewModel::class.java]
 
         _binding = FragmentFavouriteDishesBinding.inflate(inflater, container, false)
         val root: View = binding.root
@@ -61,19 +60,24 @@ class FavouriteDishesFragment : Fragment() {
         return root
     }
 
-    fun dishDetails(favDish : FavDish){
-        findNavController().navigate(FavouriteDishesFragmentDirections.actionFavouriteDishesToDishDetails(favDish))
-        if(requireActivity() is MainActivity){
-            (activity as MainActivity) .hideBottomNavigationView()
+    fun dishDetails(favDish: FavDish) {
+        findNavController().navigate(
+            FavouriteDishesFragmentDirections.actionFavouriteDishesToDishDetails(
+                favDish
+            )
+        )
+        if (requireActivity() is MainActivity) {
+            (activity as MainActivity).hideBottomNavigationView()
         }
     }
 
     override fun onResume() {
         super.onResume()
-        if(requireActivity() is MainActivity){
-            (activity as MainActivity) .showBottomNavigationView()
+        if (requireActivity() is MainActivity) {
+            (activity as MainActivity).showBottomNavigationView()
         }
     }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

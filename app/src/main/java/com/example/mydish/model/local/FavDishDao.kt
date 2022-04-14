@@ -1,8 +1,8 @@
-package com.example.mydish.model.database
+package com.example.mydish.model.local
 
 import androidx.room.*
 import androidx.room.OnConflictStrategy.REPLACE
-import com.example.mydish.model.entities.FavDish
+import com.example.mydish.model.remote.responses.FavDish
 import kotlinx.coroutines.flow.Flow
 
 @Dao

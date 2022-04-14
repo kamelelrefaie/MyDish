@@ -1,4 +1,4 @@
-package com.example.mydish.model.entities
+package com.example.mydish.model.remote.responses
 
 
 import android.os.Parcelable

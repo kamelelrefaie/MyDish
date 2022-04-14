@@ -7,15 +7,14 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.mydish.R
-import com.example.mydish.application.FavDishApplication
 import com.example.mydish.databinding.DialogCustomListBinding
 import com.example.mydish.databinding.FragmentAllDishesBinding
-import com.example.mydish.model.entities.FavDish
+import com.example.mydish.model.remote.responses.FavDish
 import com.example.mydish.utils.Constants
 import com.example.mydish.view.activities.AddUpdateDishActivity
 import com.example.mydish.view.activities.MainActivity
@@ -29,9 +28,7 @@ class AllDishesFragment : Fragment() {
     private lateinit var mFavDishAdapter: FavDishAdapter
     private lateinit var mCustomListDialog: Dialog
 
-    private val mFavDishViewModel: FavDishViewModel by viewModels {
-        FavDishViewModel.FavDishViewModelFactory((requireActivity().application as FavDishApplication).repository)
-    }
+    lateinit var  mFavDishViewModel: FavDishViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,7 +42,7 @@ class AllDishesFragment : Fragment() {
         savedInstanceState: Bundle?
     ): View {
         _binding = FragmentAllDishesBinding.inflate(inflater, container, false)
-
+        mFavDishViewModel = ViewModelProvider(requireActivity())[FavDishViewModel::class.java]
         return _binding!!.root
     }
 
