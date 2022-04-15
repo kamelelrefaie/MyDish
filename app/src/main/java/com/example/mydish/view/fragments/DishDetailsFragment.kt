@@ -10,7 +10,6 @@ import androidx.fragment.app.Fragment
 import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.navArgs
 import androidx.palette.graphics.Palette
@@ -20,7 +19,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.mydish.R
-import com.example.mydish.application.FavDishApplication
 import com.example.mydish.databinding.FragmentDishDetailsBinding
 import com.example.mydish.model.remote.responses.FavDish
 import com.example.mydish.utils.Constants

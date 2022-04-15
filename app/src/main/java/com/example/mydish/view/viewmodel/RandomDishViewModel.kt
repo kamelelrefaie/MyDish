@@ -24,7 +24,6 @@ class RandomDishViewModel @Inject constructor(private val repository: FavDishRep
     fun getRandomDishFromAPI() {
         loadRandomDish.value = true
 
-
         viewModelScope.launch {
             try {
                 randomDishResponse.value = repository.getRandomDish(
@@ -39,7 +38,6 @@ class RandomDishViewModel @Inject constructor(private val repository: FavDishRep
             }
 
         }
-
 
     }
 }

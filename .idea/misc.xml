@@ -3,6 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/MyDish/app/src/main/res/drawable/ic_share.xml" value="0.191" />
+        <entry key="..\:/MyDish/app/src/main/res/layout/dialog_custom_random.xml" value="0.18541666666666667" />
+        <entry key="..\:/MyDish/app/src/main/res/menu/menu_details_share.xml" value="0.18541666666666667" />
         <entry key="..\:/Users/PC/AndroidStudioProjects/MyDish/app/src/main/res/drawable/fav_btn_bg.xml" value="0.194" />
         <entry key="..\:/Users/PC/AndroidStudioProjects/MyDish/app/src/main/res/drawable/ic_fav_selected.xml" value="0.194" />
         <entry key="..\:/Users/PC/AndroidStudioProjects/MyDish/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.191" />

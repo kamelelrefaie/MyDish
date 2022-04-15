@@ -5,11 +5,9 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.mydish.application.FavDishApplication
 import com.example.mydish.databinding.FragmentFavouriteDishesBinding
 import com.example.mydish.model.remote.responses.FavDish
 import com.example.mydish.view.activities.MainActivity

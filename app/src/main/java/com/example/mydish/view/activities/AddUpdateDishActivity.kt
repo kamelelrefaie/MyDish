@@ -17,7 +17,6 @@ import android.text.TextUtils
 import android.util.Log
 import android.view.View
 import android.widget.Toast
-import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.core.graphics.drawable.toBitmap
@@ -30,7 +29,6 @@ import com.bumptech.glide.load.engine.GlideException
 import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.mydish.R
-import com.example.mydish.application.FavDishApplication
 import com.example.mydish.databinding.ActivityAddUpdateDishBinding
 import com.example.mydish.databinding.DialogCustomListBinding
 import com.example.mydish.databinding.DialogCustomeImageSelectionBinding

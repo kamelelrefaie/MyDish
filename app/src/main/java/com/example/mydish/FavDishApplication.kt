@@ -1,4 +1,4 @@
-package com.example.mydish.application
+package com.example.mydish
 
 import android.app.Application
 import dagger.hilt.android.HiltAndroidApp
