@@ -38,7 +38,7 @@ class FakeFavDishRepository : FavDishRepository {
             if (item.favouriteDish) getAllFavDish.value.add(item)
         }
 
-        return getFavDishesList()
+        return getAllFavDish
     }
 
     override fun getFilterDishesList(filterType: String): Flow<List<FavDish>> {

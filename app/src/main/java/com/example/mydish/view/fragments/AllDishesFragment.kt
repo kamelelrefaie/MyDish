@@ -7,7 +7,9 @@ import android.os.Bundle
 import android.view.*
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.testing.launchFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +23,10 @@ import com.example.mydish.view.activities.MainActivity
 import com.example.mydish.view.adapters.CustomListItemAdapter
 import com.example.mydish.view.adapters.FavDishAdapter
 import com.example.mydish.view.viewmodel.FavDishViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class AllDishesFragment : Fragment() {
 
@@ -28,7 +34,7 @@ class AllDishesFragment : Fragment() {
     private lateinit var mFavDishAdapter: FavDishAdapter
     private lateinit var mCustomListDialog: Dialog
 
-    lateinit var  mFavDishViewModel: FavDishViewModel
+    lateinit var mFavDishViewModel: FavDishViewModel
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -98,48 +104,82 @@ class AllDishesFragment : Fragment() {
         dishTypes.add(0, Constants.ALL_ITEMS)
 
         val adapter =
-            CustomListItemAdapter(requireActivity(),this, dishTypes, Constants.FILTER_SELECTION)
+            CustomListItemAdapter(requireActivity(), this, dishTypes, Constants.FILTER_SELECTION)
         binding.rvList.adapter = adapter
         mCustomListDialog.show()
     }
 
-     fun filterSelection(filterItemSelection: String) {
+    fun filterSelection(filterItemSelection: String) {
         mCustomListDialog.dismiss()
 
         if (filterItemSelection == Constants.ALL_ITEMS) {
             displayAllDishes()
         } else {
-           mFavDishViewModel.getFilteredList(filterItemSelection).observe(viewLifecycleOwner){
-               if (it.isEmpty()) {
-                   _binding?.recyclerView?.visibility = View.GONE
-                   _binding?.textView?.visibility = View.VISIBLE
+            lifecycleScope.launch {
+                mFavDishViewModel.getFilteredList(filterItemSelection).collect {
+                    if (it.isEmpty()) {
+                        _binding?.recyclerView?.visibility = View.GONE
+                        _binding?.textView?.visibility = View.VISIBLE
 
-                   mFavDishAdapter.setDishList(it)
-               } else {
-                   _binding?.recyclerView?.visibility = View.VISIBLE
-                   _binding?.textView?.visibility = View.GONE
+                        mFavDishAdapter.setDishList(it)
+                    } else {
+                        _binding?.recyclerView?.visibility = View.VISIBLE
+                        _binding?.textView?.visibility = View.GONE
 
-                   mFavDishAdapter.setDishList(it)
-               }
-           }
+                        mFavDishAdapter.setDishList(it)
+                    }
+                }
+
+            }
+            //live data version
+//           mFavDishViewModel.getFilteredList(filterItemSelection).observe(viewLifecycleOwner){
+//               if (it.isEmpty()) {
+//                   _binding?.recyclerView?.visibility = View.GONE
+//                   _binding?.textView?.visibility = View.VISIBLE
+//
+//                   mFavDishAdapter.setDishList(it)
+//               } else {
+//                   _binding?.recyclerView?.visibility = View.VISIBLE
+//                   _binding?.textView?.visibility = View.GONE
+//
+//                   mFavDishAdapter.setDishList(it)
+//               }
+//           }
         }
     }
 
     private fun displayAllDishes() {
-        mFavDishViewModel.allDishesList.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                _binding?.recyclerView?.visibility = View.GONE
-                _binding?.textView?.visibility = View.VISIBLE
+        lifecycleScope.launch {
+            mFavDishViewModel.allDishesList.collect {
+                if (it.isEmpty()) {
+                    _binding?.recyclerView?.visibility = View.GONE
+                    _binding?.textView?.visibility = View.VISIBLE
 
-                mFavDishAdapter.setDishList(it)
-            } else {
-                _binding?.recyclerView?.visibility = View.VISIBLE
-                _binding?.textView?.visibility = View.GONE
+                    mFavDishAdapter.setDishList(it)
+                } else {
+                    _binding?.recyclerView?.visibility = View.VISIBLE
+                    _binding?.textView?.visibility = View.GONE
 
-                mFavDishAdapter.setDishList(it)
+                    mFavDishAdapter.setDishList(it)
+                }
             }
-
         }
+
+        //live data version
+//        mFavDishViewModel.allDishesList.observe(viewLifecycleOwner) {
+//            if (it.isEmpty()) {
+//                _binding?.recyclerView?.visibility = View.GONE
+//                _binding?.textView?.visibility = View.VISIBLE
+//
+//                mFavDishAdapter.setDishList(it)
+//            } else {
+//                _binding?.recyclerView?.visibility = View.VISIBLE
+//                _binding?.textView?.visibility = View.GONE
+//
+//                mFavDishAdapter.setDishList(it)
+//            }
+//
+//        }
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

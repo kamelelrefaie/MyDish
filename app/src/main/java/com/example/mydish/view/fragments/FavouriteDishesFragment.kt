@@ -6,14 +6,16 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.mydish.databinding.FragmentFavouriteDishesBinding
 import com.example.mydish.model.remote.responses.FavDish
 import com.example.mydish.view.activities.MainActivity
 import com.example.mydish.view.adapters.FavDishAdapter
-import com.example.mydish.view.viewmodel.DashboardViewModel
 import com.example.mydish.view.viewmodel.FavDishViewModel
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.launch
 
 class FavouriteDishesFragment : Fragment() {
 
@@ -29,8 +31,7 @@ class FavouriteDishesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        val dashboardViewModel =
-            ViewModelProvider(requireActivity())[DashboardViewModel::class.java]
+
         mFavDishViewModel = ViewModelProvider(requireActivity())[FavDishViewModel::class.java]
 
         _binding = FragmentFavouriteDishesBinding.inflate(inflater, container, false)
@@ -41,21 +42,42 @@ class FavouriteDishesFragment : Fragment() {
         val adapter: FavDishAdapter = FavDishAdapter(this)
         _binding?.recyclerView?.adapter = adapter
 
-        mFavDishViewModel.favDishes.observe(viewLifecycleOwner) {
-            if (it.isEmpty()) {
-                _binding?.recyclerView?.visibility = View.GONE
-                _binding?.textView?.visibility = View.VISIBLE
+        displayFavDishes(adapter)
 
-                adapter.setDishList(it)
-            } else {
-                _binding?.recyclerView?.visibility = View.VISIBLE
-                _binding?.textView?.visibility = View.GONE
-
-                adapter.setDishList(it)
-            }
-
-        }
         return root
+    }
+
+    private fun displayFavDishes(adapter: FavDishAdapter) {
+        lifecycleScope.launch {
+            mFavDishViewModel.favDishes.collect {
+                if (it.isEmpty()) {
+                    _binding?.recyclerView?.visibility = View.GONE
+                    _binding?.textView?.visibility = View.VISIBLE
+
+                    adapter.setDishList(it)
+                } else {
+                    _binding?.recyclerView?.visibility = View.VISIBLE
+                    _binding?.textView?.visibility = View.GONE
+
+                    adapter.setDishList(it)
+                }
+            }
+        }
+//liveDate version
+        //        mFavDishViewModel.favDishes.observe(viewLifecycleOwner) {
+//            if (it.isEmpty()) {
+//                _binding?.recyclerView?.visibility = View.GONE
+//                _binding?.textView?.visibility = View.VISIBLE
+//
+//                adapter.setDishList(it)
+//            } else {
+//                _binding?.recyclerView?.visibility = View.VISIBLE
+//                _binding?.textView?.visibility = View.GONE
+//
+//                adapter.setDishList(it)
+//            }
+//
+//        }
     }
 
     fun dishDetails(favDish: FavDish) {
