@@ -10,9 +10,11 @@ import javax.inject.Inject
 @HiltViewModel
 class FavDishViewModel @Inject constructor(private val repository: FavDishRepository) : ViewModel() {
 
+
     fun insert(dish: FavDish) = viewModelScope.launch {
         repository.insertFavDishDetails(dish)
     }
+
 
     val allDishesList: LiveData<List<FavDish>> = repository.allDishesList().asLiveData()
     val favDishes: LiveData<List<FavDish>> = repository.getFavDishesList().asLiveData()

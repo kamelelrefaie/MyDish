@@ -11,9 +11,13 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import androidx.work.*
 import com.example.mydish.R
 import com.example.mydish.databinding.ActivityMainBinding
+import com.example.mydish.model.notitifcation.NotifyWorker
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
+import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
@@ -26,7 +30,8 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
+        startWork()
+        Timber.d("kamel")
         val navView: BottomNavigationView = binding.navView
 
         mNavController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -58,5 +63,21 @@ class MainActivity : AppCompatActivity() {
         binding.navView.animate().translationY(0f).duration = 300
         binding.navView.visibility = View.VISIBLE
 
+    }
+
+    private fun createConstraints() =
+        Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
+            .setRequiresBatteryNotLow(true).build()
+
+    private fun createWorkRequest() =
+        PeriodicWorkRequest.Builder(NotifyWorker::class.java, 15, TimeUnit.MINUTES)
+            .setConstraints(createConstraints()).build()
+
+    private fun startWork() {
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "notify worker",
+            ExistingPeriodicWorkPolicy.KEEP,
+            createWorkRequest()
+        )
     }
 }
