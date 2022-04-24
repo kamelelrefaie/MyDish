@@ -32,6 +32,11 @@ object Constants {
     const val DATABASE_NAME = "fav_dish_database"
 
 
+    const val NOTIFICATION_ID = "FavDish_notification_id"
+    const val NOTIFICATION_NAME = "FavDish"
+    const val NOTIFICATION_CHANNEL_id = "FavDish_channel_01"
+
+
     fun dishTypes(): ArrayList<String> {
         val list = ArrayList<String>()
         list.add("breakfast")

@@ -1,11 +1,11 @@
 package com.example.mydish.view.activities
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.navigation.NavController
-import androidx.navigation.Navigation
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.NavigationUI
@@ -15,8 +15,8 @@ import androidx.work.*
 import com.example.mydish.R
 import com.example.mydish.databinding.ActivityMainBinding
 import com.example.mydish.model.notitifcation.NotifyWorker
+import com.example.mydish.utils.Constants
 import dagger.hilt.android.AndroidEntryPoint
-import timber.log.Timber
 import java.util.concurrent.TimeUnit
 
 @AndroidEntryPoint
@@ -30,8 +30,7 @@ class MainActivity : AppCompatActivity() {
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-        startWork()
-        Timber.d("kamel")
+
         val navView: BottomNavigationView = binding.navView
 
         mNavController = findNavController(R.id.nav_host_fragment_activity_main)
@@ -44,8 +43,17 @@ class MainActivity : AppCompatActivity() {
                 R.id.navigation_random_dish
             )
         )
+
         setupActionBarWithNavController(mNavController, appBarConfiguration)
         navView.setupWithNavController(mNavController)
+
+        if (intent.hasExtra(Constants.NOTIFICATION_ID)) {
+            val notificationId = intent.getIntExtra(Constants.NOTIFICATION_ID, 0)
+            Log.i("Notification Id", "$notificationId")
+            binding.navView.selectedItemId = R.id.navigation_random_dish
+        }
+
+        startWork()
     }
 
     override fun onSupportNavigateUp(): Boolean {
@@ -65,19 +73,21 @@ class MainActivity : AppCompatActivity() {
 
     }
 
-    private fun createConstraints() =
-        Constraints.Builder().setRequiredNetworkType(NetworkType.CONNECTED)
-            .setRequiresBatteryNotLow(true).build()
+    private fun createConstraints() = Constraints.Builder()
+        .setRequiredNetworkType(NetworkType.NOT_REQUIRED)
+        .setRequiresCharging(false)
+        .setRequiresBatteryNotLow(true)
+        .build()
 
     private fun createWorkRequest() =
         PeriodicWorkRequest.Builder(NotifyWorker::class.java, 15, TimeUnit.MINUTES)
             .setConstraints(createConstraints()).build()
 
     private fun startWork() {
-        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
-            "notify worker",
-            ExistingPeriodicWorkPolicy.KEEP,
-            createWorkRequest()
-        )
+        WorkManager.getInstance(this)
+            .enqueue(
+                createWorkRequest()
+            )
     }
+
 }
